@@ -1,4 +1,5 @@
 #include "dictionary.h"
+#include <iostream>
 
 Dictionary:: Dictionary() {
     maxEntries = 512;
@@ -23,12 +24,17 @@ uint32_t Dictionary::getCode(const std::string& key)const{
 }
 
 void Dictionary::addCode(const std::string& key) {
-    if (!isFull()) {
+    if (!isFull() && !includes(key)) {
         table[key] = nextCodeInd++;
+        std::cout << key << ", " << table[key]<< std::endl;
         updateMaxEntries();
     }
 }
-
+void Dictionary::clear(){
+    table.clear();
+    nextCodeInd = 0;
+    updateMaxEntries();
+}
 
 void Dictionary::updateMaxEntries() {
     if (nextCodeInd >= 2048) {

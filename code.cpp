@@ -1,9 +1,11 @@
 // #include "archiver.h"
 #include "dictionary.h"
+#include "Encoder.h"
 #include <iostream>
 int main(int argc, char* argv[]) {
-
-
+    Encoder encoder; 
+    encoder.encode("input.txt", "output.bmp");
+    
     // if (argc < 4) {
     //     std::cout << "Usage: " << argv[0] << " [--compress/--decompress] [outputFile] [inputFiles...]\n";
     //     return 1;

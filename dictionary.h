@@ -1,3 +1,5 @@
+#pragma once
+
 #include <unordered_map>
 #include <string>
 #include <cstdint>
@@ -19,6 +21,8 @@ public:
     uint32_t getCode(const std::string& key)const;
 
     void addCode(const std::string& key);
+    
+    void clear();
 
 private:
     void updateMaxEntries();
