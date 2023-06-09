@@ -44,6 +44,7 @@ void BitPacker::packBits(uint32_t bits, int lenght) {
         }
         else{ // if less than a byte is left
         //add whats left to buffer
+            std::cout << "left std" << std::endl;
             bitCount = lenght; 
             bitBuffer = bits;
             lenght = 0; // reset to end the while loop
@@ -57,6 +58,20 @@ void BitPacker::writeByte(uint32_t byte) {
     outputFile.put(static_cast<char>(byte));
 }
 
+void BitPacker::writeLast() {
+    uint32_t bits = 0; 
+    std::cout << bitCount << std::endl;
+    if(bitCount > 0) { // If there are bits in the buffer left from last time
+        bitBuffer = bitBuffer | (bits << bitCount);
+        // int paddingBits = 8 - bitCount; // Calculate the number of padding bits needed to complete a byte
+        // bitBuffer = bitBuffer << paddingBits; // Left-shift the buffer to align the remaining bits to the left
+
+        writeByte(bitBuffer); // Write the padded bits as a byte to the file
+        bits = bits >> (8  - bitCount);
+        bitCount -= 8; 
+    }
+}
 void BitPacker::closeStream(){
+    outputFile.put(EOF); 
     outputFile.close();
 }

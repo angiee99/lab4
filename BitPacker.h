@@ -1,8 +1,8 @@
 #pragma once
 
 #include <fstream>
-#include <vector>
-#include "fileModule.h"
+#include <iostream> //test purpose
+// #include "fileModule.h"
 
 class BitPacker {
 private: 
@@ -20,5 +20,6 @@ public:
 
     void packBits(uint32_t bits, int lenght);
     
+    void writeLast();
     void closeStream();
 };

@@ -13,6 +13,7 @@ class Encoder {
 private:
     Dictionary dictionary;
     BitPacker writer; 
+    // mb std::ifstream inputFile; 
 
 public:
     void encode(const std::string& inputFilePath, const std::string& outputFilePath);

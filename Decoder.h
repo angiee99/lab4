@@ -14,7 +14,7 @@ class Decoder {
 private:
     Dictionary dictionary;
     BitReader reader;
-    std::ofstream outputFile;
+    std::ofstream outputFile; 
 
 public:
     void decode(const std::string& inputFilePath, const std::string& outputFilePath);

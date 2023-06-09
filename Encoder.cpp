@@ -37,18 +37,18 @@ void Encoder::encode(const std::string& inputFilePath, const std::string& output
         }
         
     }// Process the last character sequence
-
-    if (!currentStr.empty() && inputFile.eof()) {
-        std::cout << "last character sequence: " << currentStr <<std::endl;
+    if (!currentStr.empty()) {
         packCode(dictionary.getCode(currentStr));
+        // std::cout << "last added code: " << dictionary.getCode(currentStr) <<std::endl;
     }
-
+    writer.writeLast();
     writer.closeStream(); // Close the output file
     inputFile.close();   //  Close the input file
 };
 
 void Encoder::packCode(uint32_t code) {
         // pass the current bit-size of code (9-..)
+    std::cout << "code: " << code << std::endl;
     writer.packBits(code, dictionary.getCurrentSize()); 
 }
     
