@@ -7,19 +7,17 @@ void Encoder::encode(const std::string& inputFilePath, const std::string& output
     if (!inputFile) {
         throw std::runtime_error("Failed to open input file: " + inputFilePath);
     }
-    // fileReader (or Validator)
+    
+    writer.initWriter(outputFilePath); 
+    char nextChar; //next 
+    std::string currentStr =""; //curent sequence we are looking at
 
-    // FileWriter fileWriter(outputFilePath);
-
-    char currentChar;
-    std::string currentStr ="";
-
-    while (inputFile.get(currentChar)) {
-        currentStr += currentChar;
+    while (inputFile.get(nextChar)) {
+        currentStr += nextChar;
         std::cout << currentStr << std::endl;
 
         if (!dictionary.includes(currentStr)) {
-                // without the last char
+            // without the last char
             currentStr = currentStr.substr(0, currentStr.length() - 1);
 
             //output    
@@ -28,30 +26,29 @@ void Encoder::encode(const std::string& inputFilePath, const std::string& output
             
             //dict entry 
                 // add to dictionary including the current character
-            dictionary.addCode(currentStr+currentChar); 
+            dictionary.addCode(currentStr+nextChar); 
             
+            currentStr = nextChar; //currentStr = last char added
             
-            currentStr = currentChar; //currentStr = last char added
-            
-            if (dictionary.isFull()) { //
+            if (dictionary.isFull()) { //reset dictionary
                 dictionary.clear();
                 currentStr = "";
             }
         }
-    }
+        
+    }// Process the last character sequence
 
-    // Process the last character sequence
-    if (!currentStr.empty()) {
+    if (!currentStr.empty() && inputFile.eof()) {
+        std::cout << "last character sequence: " << currentStr <<std::endl;
         packCode(dictionary.getCode(currentStr));
     }
-    writer.closeStream();
-    // Close the output file
-    // fileWriter.close();
+
+    writer.closeStream(); // Close the output file
+    inputFile.close();   //  Close the input file
 };
 
 void Encoder::packCode(uint32_t code) {
         // pass the current bit-size of code (9-..)
-    writer.writeBits(code, sizeof(code), dictionary.getCurrentSize()); 
-
+    writer.packBits(code, dictionary.getCurrentSize()); 
 }
     

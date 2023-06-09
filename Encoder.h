@@ -7,16 +7,14 @@
 
 #include "dictionary.h"
 #include "fileModule.h"
-#include "BitWriter.h"
+#include "BitPacker.h"
 
 class Encoder {
 private:
     Dictionary dictionary;
-    std::vector<uint32_t> encodedData; //mb dont need
-    BitWriter writer; 
+    BitPacker writer; 
 
 public:
-    void  encode(const std::string& inputFilePath, const std::string& outputFilePath);
-    void  packCode(uint32_t code);
-    
+    void encode(const std::string& inputFilePath, const std::string& outputFilePath);
+    void packCode(uint32_t code);
 };

@@ -1,9 +1,11 @@
 #include "dictionary.h"
 #include <iostream>
-//          - initially 9 bits
-//         - at 512 entries 10 bits
-//         - at 1025 entries at 11 bits
-//         - at 2048 entries 12 bits
+//              < 256   8 bits
+//          256 - 512   9 bits
+//          512 - 1025  10 bits
+//         1025 - 2048  11 bits
+//              > 2048  12 bits 
+
 Dictionary:: Dictionary() {
     maxEntries = 512;
     nextCodeInd = 0;
@@ -22,9 +24,9 @@ bool Dictionary::includes(const std::string& key) const {
     return table.count(key)> 0; //
     
 }
-
+// returns the code value that represents the string
 uint32_t Dictionary::getCode(const std::string& key)const{
-    return table.at(key);
+    return table.at(key); 
 }
 int Dictionary::getCurrentSize(){
     return currentLenght; 
@@ -54,7 +56,7 @@ void Dictionary::updateMaxEntries() {
         maxEntries = 1025;
     }
 }
-
+// returns the string that corresponds to the given code
 std::string Dictionary::getString(uint32_t code) const {
     for (std::unordered_map<std::string, uint32_t>::const_iterator 
             it = table.begin(); it != table.end(); ++it) {

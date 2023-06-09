@@ -1,15 +1,26 @@
 // #include "archiver.h"
 #include "dictionary.h"
-#include "Encoder.h"
-#include "Decoder.h"
+#include "archiver.h"
 
 #include <iostream>
 int main(int argc, char* argv[]) {
-    // Encoder encoder; 
-    // encoder.encode("input.txt", "output2.bmp");
-    Decoder decoder;
-    decoder.decode("output2.bmp", "banana.txt");
-  
+    try{
+        
+        Archiver LZW_Arch; 
+    
+        LZW_Arch.compress("input.txt", "output2.bmp");
 
+        LZW_Arch.decompress("output2.bmp");
+    
+    }
+    catch (std::invalid_argument &e){
+        e.what(); 
+    }
+    catch(std::runtime_error &e){
+        e.what();
+    }
+    catch(std::exception &e){
+        e.what();
+    }
     return 0;
 }

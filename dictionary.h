@@ -9,7 +9,7 @@ private:
     std::unordered_map<std::string, uint32_t> table;
     uint32_t maxEntries;
     uint32_t nextCodeInd;
-    int currentLenght; 
+    uint32_t currentLenght; 
 
 public:
     Dictionary() ;
@@ -22,13 +22,12 @@ public:
     uint32_t getCode(const std::string& key)const;
 
     void addCode(const std::string& key);
-    
-    void clear();
 
     int getCurrentSize();
 
     std::string getString(uint32_t code) const;
 
+    void clear();
 private:
     void updateMaxEntries();
 };
