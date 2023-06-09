@@ -12,12 +12,13 @@
 class Encoder {
 private:
     Dictionary dictionary;
-    std::vector<uint32_t> encodedData;
+    std::vector<uint32_t> encodedData; //mb dont need
     BitWriter writer; 
 
    
 public:
     void encode(const std::string& inputFilePath, const std::string& outputFilePath) {
+
     // fileReader (or Validator)
         std::ifstream inputFile(inputFilePath, std::ios::binary);
         if (!inputFile) {
@@ -58,18 +59,25 @@ public:
         if (!currentStr.empty()) {
             encodeCode(dictionary.getCode(currentStr));
         }
-        
-        for(int i = 0; i < encodedData.size(); i++){
-             std::cout << encodedData[i] << std::endl;
-        }
+
+        // for(int i = 0; i < encodedData.size(); i++){
+        //      std::cout << encodedData[i] << std::endl;
+        // }
        
-        writer.flushBuffer();
+         // Flush any remaining bits in the BitWriter
+        // writer.flushBuffer();
 
-        fileWriter.writeBytes(encodedData); // 
+        // Write the packed bytes to the output file
+        // fileWriter.writeBytes(writer.getPackedData());
+
+        // Close the output file
+        fileWriter.close();
     };
+// can be void 
+    void  encodeCode(uint32_t code) {
+        writer.writeBits(code, sizeof(code), dictionary.getCurrentSize()); // pass the current bit-size of code (9-..)
 
-    void encodeCode(uint32_t code) {
-        uint8_t result = writer.writeBits(code, sizeof(code));
-        encodedData.push_back(result);
+        // encodedData.push_back(result);
     }
+    
 };
