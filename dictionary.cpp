@@ -11,6 +11,7 @@ Dictionary:: Dictionary() {
     // starter single-character codes
     for (uint32_t i = 0; i < 256; ++i) {
         table[std::string(1, static_cast<char>(i))] = nextCodeInd++;
+        // table[std::string(1, i)] = nextCodeInd++;
     }
 }
 bool Dictionary::isFull() const {
