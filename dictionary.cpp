@@ -64,11 +64,3 @@ std::string Dictionary::getString(uint32_t code) const {
     }
     return ""; // Return empty string if code not found in the dictionary
 }
-// std::string Dictionary::getString(uint32_t code) const {
-//     for (const auto& entry : table) {
-//         if (entry.second == code) { //If a match is found, it returns the string associated with that code
-//             return entry.first;
-//         }
-//     }
-//     return ""; // Return empty string if code not found in the dictionary
-// }

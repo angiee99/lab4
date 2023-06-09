@@ -5,14 +5,11 @@
 
 #include <iostream>
 int main(int argc, char* argv[]) {
-    Encoder encoder; 
-    encoder.encode("input.txt", "output2.bmp");
-    // Decoder decoder;
-    // decoder.decode("output.bmp", "banana.txt");
+    // Encoder encoder; 
+    // encoder.encode("input.txt", "output2.bmp");
+    Decoder decoder;
+    decoder.decode("output2.bmp", "banana.txt");
   
-
-
-
 
     return 0;
 }
