@@ -7,10 +7,9 @@
 class BitReader {
 private:
     std::ifstream inputFile;
-    unsigned char readChar; 
     uint8_t bitBuffer;
     uint8_t bitCount;
-
+    unsigned char readChar; 
     int bitMasks[9];
 
 public:
@@ -20,14 +19,8 @@ public:
 
     bool hasData() ;
     
-    uint32_t _readCode();
-
     uint32_t readCode(int lenght);
 
     void closeStream();
 
-private:
-    uint8_t readBit();
-
-    void readByte();
 };
