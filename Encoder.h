@@ -13,9 +13,9 @@ class Encoder {
 private:
     Dictionary dictionary;
     BitPacker writer; 
-    // mb std::ifstream inputFile; 
+    std::ifstream inputFile; 
 
 public:
     void encode(const std::string& inputFilePath, const std::string& outputFilePath);
-    void packCode(uint32_t code);
+    void packCode(uint16_t code);
 };

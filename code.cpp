@@ -1,55 +1,44 @@
-
-#include "dictionary.h"
 #include "archiver.h"
-// #include "fileModule.h"
-
 #include <iostream>
+
 int main(int argc, char* argv[]) {
-    // ./code --compress output.mgzip input.bmp
-    //  ./code --decompress output.mgzip
-    // OR ./code --compress input.bmp
     
     try{
         if (argc < 3) {
-            std::cout << "Usage: " << argv[0] << " [--compress [outputFile] [inputFile]\n"
-            << " [--decompress [inputFile]\n";
+            std::cout <<"To little arguments. Enter at the mode and the file\n";
+            std::cout << "Usage: " << argv[0] << " --compress [outputFile] [inputFile]\n       "
+            << argv[0] << " --decompress [inputFile]\n";
             return 1;
         }
-
         
         std::string mode = argv[1];
         std::string outputFile = argv[2];
         if(mode != "--compress" && mode != "--decompress"){
-            std::cout << "Usage: " << argv[0] << " [--compress [outputFile] [inputFile]\n"
-            << " [--decompress [inputFile]\n";
+            std::cout <<"The mode is either ----compress or --decompress\n";
+            std::cout << "Usage: " << argv[0] << " --compress [outputFile] [inputFile]\n       "
+            << argv[0] << " --decompress [inputFile]\n";
             return 1;
         }
 
-            // if mode is not ok -> "Invalid mode" ->  return 2
         Archiver LZW_Arch; 
-        if (mode == "--compress") {
-            
-                LZW_Arch.compress(argv[3], outputFile);
+        if (mode == "--compress") { 
 
-        } else if (mode == "--decompress") {
+            LZW_Arch.compress(argv[3], outputFile);
+
+        }else if (mode == "--decompress") {
+
             LZW_Arch.decompress(outputFile);
         }
         
-            // Archiver LZW_Arch; 
-        
-            // LZW_Arch.compress("aba.txt", "output.myzip");
-
-            // LZW_Arch.decompress("output.myzip");
-        
     }
     catch (std::invalid_argument &e){
-        std::cout <<  e.what(); 
+        std::cout <<  e.what() << std::endl; 
     }
     catch(std::runtime_error &e){
-        std::cout << e.what();
+        std::cout << e.what() << std::endl; 
     }
     catch(std::exception &e){
-        std::cout <<  e.what();
+        std::cout <<  e.what() << std::endl; 
     }
     return 0;
 }

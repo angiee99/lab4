@@ -1,43 +1,35 @@
 #include "dictionary.h"
-#include <iostream>
-//              < 256   8 bits
-//          256 - 512   9 bits
-//          512 - 1025  10 bits
-//         1025 - 2048  11 bits
-//              > 2048  12 bits 
 
 Dictionary:: Dictionary() {
     maxEntries = 512;
     nextCodeInd = 0;
     currentLenght = 9; 
     // starter single-character codes
-    for (uint32_t i = 0; i < 256; ++i) {
+    for (uint16_t i = 0; i < 256; ++i) {
         table[std::string(1, static_cast<char>(i))] = nextCodeInd++;
-        // table[std::string(1, i)] = nextCodeInd++;
     }
 }
-bool Dictionary::isFull() const {
+bool Dictionary::isFull()  {
     return nextCodeInd >= maxEntries;
 }
 
-bool Dictionary::includes(const std::string& key) const {
-    return table.count(key)> 0; //
+bool Dictionary::includes(const std::string& key) {
+    return table.count(key)> 0;
     
 }
 // returns the code value that represents the string
-uint32_t Dictionary::getCode(const std::string& key)const{
+uint16_t Dictionary::getCode(const std::string& key){
     return table.at(key); 
 }
-uint32_t Dictionary::getCurrentSize(){
+uint16_t Dictionary::getCurrentSize(){
     return currentLenght; 
 }
-uint32_t Dictionary::getNextCode(){
+uint16_t Dictionary::getNextCode(){
     return nextCodeInd+1; 
 }
 void Dictionary::addCode(const std::string& key) {
     if (!isFull() && !includes(key)) {
         table[key] = nextCodeInd++;
-        std::cout << key << ", " << table[key]<< std::endl;
         updateMaxEntries();
     }
 }
@@ -60,10 +52,10 @@ void Dictionary::updateMaxEntries() {
     }
 }
 // returns the string that corresponds to the given code
-std::string Dictionary::getString(uint32_t code) const {
-    for (std::unordered_map<std::string, uint32_t>::const_iterator 
+std::string Dictionary::getString(uint16_t code) {
+    for (std::unordered_map<std::string, uint16_t>::const_iterator 
             it = table.begin(); it != table.end(); ++it) {
-        if (it->second == code) { // If a match is found, it returns the string associated with that code
+        if (it->second == code) { // if a match is found, it returns the string associated with that code
             return it->first;
         }
     }

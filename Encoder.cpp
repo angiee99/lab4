@@ -2,8 +2,7 @@
 
 void Encoder::encode(const std::string& inputFilePath, const std::string& outputFilePath) {
 
-    // fileReader (or Validator)
-    std::ifstream inputFile(inputFilePath, std::ios::binary);
+    inputFile.open(inputFilePath, std::ios::binary);
     if (!inputFile) {
         throw std::runtime_error("Failed to open input file: " + inputFilePath);
     }
@@ -14,7 +13,6 @@ void Encoder::encode(const std::string& inputFilePath, const std::string& output
     while (inputFile.get(nextChar)) {
         
         currentStr += nextChar;
-        std::cout << currentStr << std::endl;
 
         if (!dictionary.includes(currentStr)) {
             // without the last char
@@ -39,18 +37,15 @@ void Encoder::encode(const std::string& inputFilePath, const std::string& output
         
     }// Process the last character sequence with prev str now
     if (!currentStr.empty()) {
-        std::cout << currentStr << std::endl;
         packCode(dictionary.getCode(currentStr));
-        // std::cout << "last added code: " << dictionary.getCode(currentStr) <<std::endl;
     }
     writer.writeLast();
     writer.closeStream(); // Close the output file
     inputFile.close();   //  Close the input file
 };
 
-void Encoder::packCode(uint32_t code) {
+void Encoder::packCode(uint16_t code) {
         // pass the current bit-size of code (9-..)
-    std::cout << "code: " << code << std::endl;
     writer.packBits(code, dictionary.getCurrentSize()); 
 }
     

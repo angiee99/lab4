@@ -2,33 +2,31 @@
 
 #include <unordered_map>
 #include <string>
-#include <cstdint>
 
 class Dictionary {
-private:
-    std::unordered_map<std::string, uint32_t> table;
-    uint32_t maxEntries;
-    uint32_t nextCodeInd;
-    uint32_t currentLenght; 
 
+    std::unordered_map<std::string, uint16_t> table;
+    uint16_t maxEntries;
+    uint16_t nextCodeInd;
+    uint16_t currentLenght; 
+
+    void updateMaxEntries();
 public:
-    Dictionary() ;
+    Dictionary();
 
-    // bool isLoaded() const 
-    bool isFull() const ;
+    bool isFull();
 
-    bool includes(const std::string& key) const;
+    bool includes(const std::string& key);
 
-    uint32_t getCode(const std::string& key)const;
+    uint16_t getCode(const std::string& key);
 
     void addCode(const std::string& key);
 
-    uint32_t getCurrentSize();
-    uint32_t getNextCode(); 
+    uint16_t getCurrentSize();
+    uint16_t getNextCode(); 
 
-    std::string getString(uint32_t code) const;
+    std::string getString(uint16_t code) ;
 
     void clear();
-private:
-    void updateMaxEntries();
+
 };

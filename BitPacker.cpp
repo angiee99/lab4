@@ -7,7 +7,6 @@ BitPacker::~BitPacker(){
     if (outputFile.is_open())
         outputFile.close();
 }
-// ~ if outputFile -> close it
 
 void BitPacker::initWriter( const std::string& outputFName, const std::string& inputFName){
     outputFile.open(outputFName, std::ios::binary);
@@ -19,7 +18,7 @@ void BitPacker::initWriter( const std::string& outputFName, const std::string& i
         outputFile.write(&c, sizeof(char));
     }
     char separator = 'N';
-    // Write the separator to indicate the end of the string
+    // separator - the end of the string
     outputFile.write(&separator, sizeof(char));
 
 }
@@ -30,15 +29,14 @@ void BitPacker::resetBuffer() {
     bitCount = 0;
 }
 
-void BitPacker::packBits(uint32_t bits, int lenght) {
+void BitPacker::packBits(uint16_t bits, int lenght) {
     if( bitCount > 0){ // if there are bits in buffer left from last time 
         bitBuffer = bitBuffer | (bits << bitCount); // 10101010 << 4 = 10101010000 
-                                                    //10101010000 | 00001111 = 10101010011
+                                                    
         
-        writeByte(bitBuffer); //write a formed byte 1010011
+        writeByte(bitBuffer); //write a formed byte 
             
         bits = bits >> (8  - bitCount); // shifting for 'clearing' bits that were written
-                                    // 10101010011 >> 4 = 000010101010011
         
         lenght -= 8 - bitCount; //to keep track of the remaining bits left to write.
 
@@ -52,7 +50,6 @@ void BitPacker::packBits(uint32_t bits, int lenght) {
         }
         else{ // if less than a byte is left
         //add whats left to buffer
-            std::cout << "left std" << std::endl;
             bitCount = lenght; 
             bitBuffer = bits;
             lenght = 0; // reset to end the while loop
@@ -60,17 +57,15 @@ void BitPacker::packBits(uint32_t bits, int lenght) {
     }
 }
 
-void BitPacker::writeByte(uint32_t byte) {
-    // takes the least significant 8 bits (LSB) of bitBuffer
-    //  byte = 10101010011, then takes 01001011
+void BitPacker::writeByte(uint16_t byte) {
+
     outputFile.put(static_cast<char>(byte));
 }
 
 void BitPacker::writeLast() {
-    uint32_t bits = 0; 
-    std::cout << bitCount << std::endl;
-    if(bitCount > 0) { // If there are bits in the buffer left from last time
-        writeByte(bitBuffer); // Write the buffer to the file
+    uint16_t bits = 0; 
+    if(bitCount > 0) { // if there are bits in the buffer left from last time
+        writeByte(bitBuffer); // write the buffer to the file
     }
 }
 void BitPacker::closeStream(){
