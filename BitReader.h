@@ -15,7 +15,7 @@ private:
 public:
     BitReader();
 
-    void setStream(std::string inputFileName);
+    std::string setStream(std::string inputFileName);
 
     bool hasData() ;
     

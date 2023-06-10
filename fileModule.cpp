@@ -3,7 +3,7 @@ void FileValidator::validateInput(const std::string& filename) {
     std::ifstream inputFile(filename);
     if (!inputFile) {
         inputFile.close();
-        throw std::runtime_error("Cannot open file: " + filename);
+        throw std::runtime_error("Cannot open file: " + filename +" \n");
     }
 
     inputFile.close();
@@ -13,13 +13,13 @@ void FileValidator::validateOutput(const std::string& filename) {
     std::ofstream outputFile(filename);
     if (!outputFile) {
         outputFile.close();
-        throw std::runtime_error("Cannot open file: " + filename);
+        throw std::runtime_error("Cannot open file: " + filename +" \n");
     }
 
     outputFile.close();
 }
 
-void CompressedFileValidator::validateCompressedFile(const std::string& filename, bool isInput = false){
+void CompressedFileValidator::validateCompressedFile(const std::string& filename, bool isInput){
     if (isInput) validateInput(filename); 
     else validateOutput(filename);
     // validate the extension

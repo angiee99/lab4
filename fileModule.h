@@ -14,8 +14,3 @@ class CompressedFileValidator: public FileValidator{
 public:
     void validateCompressedFile(const std::string& filename, bool isInput = false);
 };
-
-class FileNameFactory{
-    // nameOutput
-    // recoverInputName
-};

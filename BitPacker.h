@@ -16,7 +16,7 @@ public:
     BitPacker();
     ~BitPacker();
 
-    void initWriter( const std::string& outputFName);
+    void initWriter( const std::string& outputFName, const std::string& inputFName);
 
     void packBits(uint32_t bits, int lenght);
     

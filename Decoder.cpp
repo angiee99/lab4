@@ -12,17 +12,20 @@
             STRING = ENTRY //reset
 */
 #include "Decoder.h"
-void Decoder::decode(const std::string& inputFilePath, const std::string& outputFilePath) {
+void Decoder::decode(const std::string& inputFilePath) {
     
-    outputFile.open(outputFilePath);
+    std::string outputName = reader.setStream(inputFilePath); //init the BitReader
+    std::cout << "\n" << outputName <<std::endl;
+
+    outputFile.open(outputName); // 
     if (!outputFile) {
-        throw std::invalid_argument("Failed to open output file: " + outputFilePath);
+        throw std::invalid_argument("Failed to open output file: " + outputName);
     }    
     
     uint32_t prevCode, curCode;
     std::string entry; //decoded string repr
 
-    reader.setStream(inputFilePath); //init the BitReader
+   
 // reading first code
     prevCode = reader.readCode(dictionary.getCurrentSize()); //just read it
     output(entryFromCode(prevCode)); //then output the string representation

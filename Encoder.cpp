@@ -8,7 +8,7 @@ void Encoder::encode(const std::string& inputFilePath, const std::string& output
         throw std::runtime_error("Failed to open input file: " + inputFilePath);
     }
     
-    writer.initWriter(outputFilePath); 
+    writer.initWriter(outputFilePath, inputFilePath); 
     char nextChar; //next 
     std::string currentStr =""; //curent sequence we are looking at
     while (inputFile.get(nextChar)) {

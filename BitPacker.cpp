@@ -9,10 +9,18 @@ BitPacker::~BitPacker(){
 }
 // ~ if outputFile -> close it
 
-void BitPacker::initWriter( const std::string& outputFName){
+void BitPacker::initWriter( const std::string& outputFName, const std::string& inputFName){
     outputFile.open(outputFName, std::ios::binary);
     if (!outputFile)
-        throw std::runtime_error("Failed to open output file"); //mb return
+        throw std::runtime_error("Failed to open output file " + outputFName); 
+    
+    for (int i = 0; i < inputFName.size(); ++i) {
+        char c = inputFName[i];
+        outputFile.write(&c, sizeof(char));
+    }
+    char separator = 'N';
+    // Write the separator to indicate the end of the string
+    outputFile.write(&separator, sizeof(char));
 
 }
 

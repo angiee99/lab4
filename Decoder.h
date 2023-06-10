@@ -17,7 +17,7 @@ private:
     std::ofstream outputFile; 
 
 public:
-    void decode(const std::string& inputFilePath, const std::string& outputFilePath);
+    void decode(const std::string& inputFilePath);
 
 private:
     std::string entryFromCode(uint32_t code);
