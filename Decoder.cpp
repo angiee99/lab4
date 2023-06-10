@@ -26,11 +26,10 @@ void Decoder::decode(const std::string& inputFilePath, const std::string& output
     char ch;
 
 // reading first code
-
     prevCode = reader.readCode(dictionary.getCurrentSize());
     std::cout << "prevCode: " << prevCode << std::endl;
     output(entryFromCode(prevCode));
-
+//
     while (reader.hasData()) {
         curCode = reader.readCode(dictionary.getCurrentSize()); // get current
         std::cout << "curCode: "  << curCode << std::endl; 
@@ -40,8 +39,11 @@ void Decoder::decode(const std::string& inputFilePath, const std::string& output
             break; 
         }
 
-        if ( curCode == dictionary.getNextCode() -1) // special case
+        if ( curCode == dictionary.getNextCode() - 1){ // special case
+            std::cout << "prevCode" << prevCode << std::endl;
+            std::cout << "curCode: "<< curCode << std::endl;
             dictionary.addCode(entryFromCode(prevCode) + entryFromCode(prevCode)[0]);
+        }
         else{
             entry = entryFromCode(curCode); // form output (if <= 255 -> output, 
                                                 //else look up for decode)
