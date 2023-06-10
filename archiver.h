@@ -12,6 +12,7 @@ class Archiver {
 private:
     Encoder encoder; 
     Decoder decoder; 
+    CompressedFileValidator validator;
 public:
     void compress(const std::string& inputFile, const std::string& outputFile);
 

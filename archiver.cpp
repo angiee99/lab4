@@ -2,20 +2,27 @@
 //#include "fileValidator.h"
 
 void Archiver::compress(const std::string& inputFile, const std::string& outputFile) {
-    // mb here validate the input and output files 
+
+    validator.validateInput("input.txt"); 
+    validator.validateCompressedFile("output.my");
+    
+    std::cout << "Compressing file " << inputFile ; 
+
+    // mb here  create the output name for compressed file 
     this->encoder.encode(inputFile, outputFile);    
 
-    std::cout << "Compressing file " << inputFile << "... Done.\n";
+    std::cout << "... Done.\n";
 }
 
 void Archiver::decompress(const std::string& inputFile) {
-
-// varifying the input file for decompression
-    // std::string outputPrefix = inputFile.substr(0, inputFile.find_last_of('.'));
+    validator.validateCompressedFile("output.myzip", true);
+    
+    std::cout << "Getting out "<< inputFile;
+// create the output name for decompressed file
 
     this->decoder.decode(inputFile, "output"); //!!! change the name
 
-    std::cout << "Getting out "<< inputFile << std::endl;
+    std::cout << "... Done.\n";
 }
 
 
