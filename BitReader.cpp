@@ -1,9 +1,13 @@
 #include "BitReader.h"
-   
+
 BitReader::BitReader() {
     bitBuffer = 0; 
     bitCount = 0; 
     readChar = 0; 
+    // for(int i = 0; i< 9; i++){
+    //     bitMasks[i] = pow(2, i) - 1;
+    // }
+    // 0x00 0x01 0x03 0x07 0x0F 0x1F 0x3F 0x7F 0xFF
     bitMasks[0] = 0x00;
     bitMasks[1] = 0x01;
     bitMasks[2] = 0x03;
@@ -15,21 +19,17 @@ BitReader::BitReader() {
     bitMasks[8] = 0xFF;
 } 
 
-    void BitReader::setStream(std::string inputFileName) {
-        inputFile.open(inputFileName, std::ios::binary);
-        if (!inputFile) {
-            throw std::runtime_error("Failed to open input file: " + inputFileName);
-        }
-        // inputFile = std::move(*stream);
-        // inputFile.seekg(0, std::ios::end);
-        // uint64_t fileSize = inputFile.tellg();
-        // inputFile.seekg(0, std::ios::beg);
-        // readByte(); // Read the first byte into the bit buffer
+void BitReader::setStream(std::string inputFileName) {
+    inputFile.open(inputFileName, std::ios::binary);
+    if (!inputFile) {
+        throw std::runtime_error("Failed to open input file: " + inputFileName);
+        // return 
     }
+}
 
-    bool BitReader::hasData() {
-        return !inputFile.eof();
-    }
+bool BitReader::hasData() {
+    return !inputFile.eof();
+}
     
     uint32_t BitReader::_readCode() {
         uint32_t code = 0;
@@ -42,50 +42,57 @@ BitReader::BitReader() {
         return code;
     }
 
-    uint32_t BitReader::readCode(int lenght) {
-        uint32_t code; // сюди зчитуємо 
-        std::size_t leftBits = lenght ;  // скількі бітів лишилось зчитати 
-                         //початково дорівнює розміру поточного макс коду в таблиці (9 - 12)
+uint32_t BitReader::readCode(int lenght) {
+    uint32_t code; // сюди зчитуємо 
+    //length початково дорівнює розміру поточного макс коду в таблиці (9 - 12),  скількі бітів лишилось зчитати 
+    
+    std::size_t addedBitsCount = 0; // скільки з минулого читання лишилось 
+
+    // усе що лишалось в буфері записуємо у поточний код поки
+    if(bitCount > 0){
         
-        std::size_t offset = bitCount; // скільки з минулого читання лишилось 
-
-        unsigned char charRead; 
-
-        // Write out leftovers from the buffer
-        code = bitBuffer;   		// заповнив код кешем 
-        leftBits -= bitCount;       // лишилось наш код заповнити вже на меншу кількість бітів
-        bitCount = 0;               // почистив кеш 
+        code = bitBuffer;   //101		// заповнили код кешем 
+        lenght -= bitCount; // length = 9-3 = 6   // лишилось наш код заповнити вже на меншу кількість бітів
+        addedBitsCount = bitCount; 
+        bitCount = 0;       // ресет буфер
         bitBuffer = 0;
-
-        // Reading what's left to read
-        while (leftBits != 0 && inputFile.get(reinterpret_cast<char &>(charRead)))
+    }
+   
+    // нове читання з файлу
+    while (lenght != 0 && inputFile.get(reinterpret_cast<char &>(readChar)))
+    {
+        // треба ще записати 8+ бітів
+        if (lenght >= 8)
         {
-            // More than a byte left
-            if (leftBits >= 8)
-            {
-                // Add a new byte to our code, taking into account bits
-                // that were already added
-                code |= static_cast<uint32_t>(charRead) << offset;
-                offset += 8;
-                leftBits -= 8;
-            }
-            else
-            {
-                // Using a bit mask to add only bits that's left and no more
-                code |= static_cast<uint32_t>(charRead & bitMasks[leftBits]) << offset;
-                bitCount = 8 - leftBits;
-                bitBuffer = charRead >> leftBits;
-                break;
-            }
+            // додати до коду, де потенційно є залишок з буферу 
+            // зчитаний символ, в результаті отримати байт у коді
+                // readChar = 11001100
+                // 11001100 << 3 = 11001100000 = 01100000
+                // code = 11001100000 | 101 =    01100101 
+            code |= static_cast<uint32_t>(readChar) << addedBitsCount;
+            addedBitsCount += 8; 
+            lenght -= 8;
         }
-
-        return code;
-
+        else
+        {
+            // менше ніж 8 бітів -> за доп маски комбінуємо потрібни 8 у код
+                // readChar = 11001100 
+                // lenght = 6 
+                // 11001100 & 0x3F = 00001100 
+                // 00001100 << 9 = 00001100000000000
+            code |= static_cast<uint32_t>(readChar & bitMasks[lenght]) << addedBitsCount;
+            bitCount = 8 - lenght; //записати розмір буферу, який зараз оновиться
+            bitBuffer = readChar >> lenght; // записати у буфер те, що не увійшло в код
+                //bitBuffer = 11001100 >> 6 = 00000011
+            break;
+        }
+    }
+    return code;
 }
 
-    void BitReader::closeStream(){
-        inputFile.close();
-    }
+void BitReader::closeStream(){
+    inputFile.close();
+}
 
 
     uint8_t BitReader::readBit() {

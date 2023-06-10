@@ -14,70 +14,55 @@
 #include "Decoder.h"
 void Decoder::decode(const std::string& inputFilePath, const std::string& outputFilePath) {
     
-    outputFile.open(outputFilePath);// std::ios::binary
+    outputFile.open(outputFilePath);
     if (!outputFile) {
         throw std::invalid_argument("Failed to open output file: " + outputFilePath);
-    }
-
-    reader.setStream(inputFilePath);
-
+    }    
+    
     uint32_t prevCode, curCode;
-    std::string entry;
-    char ch;
+    std::string entry; //decoded string repr
 
+    reader.setStream(inputFilePath); //init the BitReader
 // reading first code
-    prevCode = reader.readCode(dictionary.getCurrentSize());
-    std::cout << "prevCode: " << prevCode << std::endl;
-    output(entryFromCode(prevCode));
-//
+    prevCode = reader.readCode(dictionary.getCurrentSize()); //just read it
+    output(entryFromCode(prevCode)); //then output the string representation
+
+// reading all codes while there are still some to read
     while (reader.hasData()) {
-        curCode = reader.readCode(dictionary.getCurrentSize()); // get current
-        std::cout << "curCode: "  << curCode << std::endl; 
+        curCode = reader.readCode(dictionary.getCurrentSize()); // get current code
         
         if (!reader.hasData() || curCode > dictionary.getNextCode()) 
-        {  // do not write the EOF or dont check for curCode that is out of dict
+        {  // do not write the EOF and dont check for curCode that is out of dict
             break; 
         }
 
-        if ( curCode == dictionary.getNextCode() - 1){ // special case
-            std::cout << "prevCode" << prevCode << std::endl;
-            std::cout << "curCode: "<< curCode << std::endl;
+        if ( curCode == dictionary.getNextCode() - 1){ // special case cScSc, where c is a byte and S is a string 
             dictionary.addCode(entryFromCode(prevCode) + entryFromCode(prevCode)[0]);
         }
         else{
-            entry = entryFromCode(curCode); // form output (if <= 255 -> output, 
-                                                //else look up for decode)
-            // output(entry); // output it
-
-            ch = entry[0]; //first "part" of entry (current code value)
-            if(ch)
-            dictionary.addCode(entryFromCode(prevCode) + ch); // add prev + entry[0] to dict
+            entry = entryFromCode(curCode); // form output sting from given code
+            dictionary.addCode(entryFromCode(prevCode) + entry[0]); // add prev + entry[0] to dict
         }
+
         entry = entryFromCode(curCode);
-        output(entry);
+        output(entry); //write to uncompressed file
         prevCode = curCode; // reset previous
     }
-    // output(entryFromCode(prevCode));
-    reader.closeStream();
+    //close the streams
+    reader.closeStream(); 
     outputFile.close();
 }
 
 
 std::string Decoder::entryFromCode(uint32_t code) {
-    if (code <= 255) { // if basic ascii value: just return it 
-            // std::cout << dictionary.getString(code) << std::endl;
+    if (code <= 255) { // if basic ascii value: just return its char 
         std::string result(1, (char)(code)); 
         return result;
-        // return dictionary.getString(code);
     } else { // if not basic value, search for it in the table
-        std::string entry = dictionary.getString(code);
-        //  entry += entry[0]; //??
-            // std::cout << entry << std::endl;
-        return entry;
+        return dictionary.getString(code);
     }
 }
 
 void Decoder::output(const std::string& entry) {
-//     outputFile.write(entry.c_str(), entry.length());
     outputFile << entry; 
 }
