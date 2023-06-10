@@ -1,9 +1,11 @@
 #include "dictionary.h"
 #include <iostream>
-//          - initially 9 bits
-//         - at 512 entries 10 bits
-//         - at 1025 entries at 11 bits
-//         - at 2048 entries 12 bits
+//              < 256   8 bits
+//          256 - 512   9 bits
+//          512 - 1025  10 bits
+//         1025 - 2048  11 bits
+//              > 2048  12 bits 
+
 Dictionary:: Dictionary() {
     maxEntries = 512;
     nextCodeInd = 0;
@@ -11,6 +13,7 @@ Dictionary:: Dictionary() {
     // starter single-character codes
     for (uint32_t i = 0; i < 256; ++i) {
         table[std::string(1, static_cast<char>(i))] = nextCodeInd++;
+        // table[std::string(1, i)] = nextCodeInd++;
     }
 }
 bool Dictionary::isFull() const {
@@ -21,12 +24,15 @@ bool Dictionary::includes(const std::string& key) const {
     return table.count(key)> 0; //
     
 }
-
+// returns the code value that represents the string
 uint32_t Dictionary::getCode(const std::string& key)const{
-    return table.at(key);
+    return table.at(key); 
 }
-int Dictionary::getCurrentSize(){
+uint32_t Dictionary::getCurrentSize(){
     return currentLenght; 
+}
+uint32_t Dictionary::getNextCode(){
+    return nextCodeInd+1; 
 }
 void Dictionary::addCode(const std::string& key) {
     if (!isFull() && !includes(key)) {
@@ -53,7 +59,7 @@ void Dictionary::updateMaxEntries() {
         maxEntries = 1025;
     }
 }
-
+// returns the string that corresponds to the given code
 std::string Dictionary::getString(uint32_t code) const {
     for (std::unordered_map<std::string, uint32_t>::const_iterator 
             it = table.begin(); it != table.end(); ++it) {
@@ -63,11 +69,3 @@ std::string Dictionary::getString(uint32_t code) const {
     }
     return ""; // Return empty string if code not found in the dictionary
 }
-// std::string Dictionary::getString(uint32_t code) const {
-//     for (const auto& entry : table) {
-//         if (entry.second == code) { //If a match is found, it returns the string associated with that code
-//             return entry.first;
-//         }
-//     }
-//     return ""; // Return empty string if code not found in the dictionary
-// }
