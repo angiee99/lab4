@@ -23,7 +23,8 @@ public:
 
     void addCode(const std::string& key);
 
-    int getCurrentSize();
+    uint32_t getCurrentSize();
+    uint32_t getNextCode(); 
 
     std::string getString(uint32_t code) const;
 

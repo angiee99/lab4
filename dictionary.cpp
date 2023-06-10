@@ -28,8 +28,11 @@ bool Dictionary::includes(const std::string& key) const {
 uint32_t Dictionary::getCode(const std::string& key)const{
     return table.at(key); 
 }
-int Dictionary::getCurrentSize(){
+uint32_t Dictionary::getCurrentSize(){
     return currentLenght; 
+}
+uint32_t Dictionary::getNextCode(){
+    return nextCodeInd+1; 
 }
 void Dictionary::addCode(const std::string& key) {
     if (!isFull() && !includes(key)) {

@@ -8,7 +8,8 @@
         if TABLE[CODE] is not defined: // needed because sometimes the
             ENTRY = STRING + STRING[0] // decoder may not yet have entry else:
             ENTRY = TABLE[CODE] output ENTRY
-            add STRING+ENTRY[0] to TABLE STRING = ENTRY
+            add STRING+ENTRY[0] to TABLE 
+            STRING = ENTRY //reset
 */
 #include "Decoder.h"
 void Decoder::decode(const std::string& inputFilePath, const std::string& outputFilePath) {
@@ -33,16 +34,25 @@ void Decoder::decode(const std::string& inputFilePath, const std::string& output
     while (reader.hasData()) {
         curCode = reader.readCode(dictionary.getCurrentSize()); // get current
         std::cout << "curCode: "  << curCode << std::endl; 
-        if (!reader.hasData()) {
-            break; // do not write the EOF
-        }
-        entry = entryFromCode(curCode); // form output (if <= 255 -> output, 
-                                            //else look up for decode)
-        output(entry); // output it
-
-        ch = entry[0]; //first "part" of entry (current code value)
-        dictionary.addCode(entryFromCode(prevCode) + ch); // add prev + entry[0] to dict
         
+        if (!reader.hasData() || curCode > dictionary.getNextCode()) 
+        {  // do not write the EOF or dont check for curCode that is out of dict
+            break; 
+        }
+
+        if ( curCode == dictionary.getNextCode() -1) // special case
+            dictionary.addCode(entryFromCode(prevCode) + entryFromCode(prevCode)[0]);
+        else{
+            entry = entryFromCode(curCode); // form output (if <= 255 -> output, 
+                                                //else look up for decode)
+            // output(entry); // output it
+
+            ch = entry[0]; //first "part" of entry (current code value)
+            if(ch)
+            dictionary.addCode(entryFromCode(prevCode) + ch); // add prev + entry[0] to dict
+        }
+        entry = entryFromCode(curCode);
+        output(entry);
         prevCode = curCode; // reset previous
     }
     // output(entryFromCode(prevCode));
@@ -53,12 +63,14 @@ void Decoder::decode(const std::string& inputFilePath, const std::string& output
 
 std::string Decoder::entryFromCode(uint32_t code) {
     if (code <= 255) { // if basic ascii value: just return it 
-        // std::cout << dictionary.getString(code) << std::endl;
-        return dictionary.getString(code);
-    } else { // if not basic value, 
-        std::string entry = dictionary.getString(code); //code - 1
+            // std::cout << dictionary.getString(code) << std::endl;
+        std::string result(1, (char)(code)); 
+        return result;
+        // return dictionary.getString(code);
+    } else { // if not basic value, search for it in the table
+        std::string entry = dictionary.getString(code);
         //  entry += entry[0]; //??
-        // std::cout << entry << std::endl;
+            // std::cout << entry << std::endl;
         return entry;
     }
 }

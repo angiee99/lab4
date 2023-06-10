@@ -62,13 +62,13 @@ void BitPacker::writeLast() {
     uint32_t bits = 0; 
     std::cout << bitCount << std::endl;
     if(bitCount > 0) { // If there are bits in the buffer left from last time
-        bitBuffer = bitBuffer | (bits << bitCount);
+        bitBuffer = bitBuffer | bits;
         // int paddingBits = 8 - bitCount; // Calculate the number of padding bits needed to complete a byte
         // bitBuffer = bitBuffer << paddingBits; // Left-shift the buffer to align the remaining bits to the left
 
         writeByte(bitBuffer); // Write the padded bits as a byte to the file
-        bits = bits >> (8  - bitCount);
-        bitCount -= 8; 
+        // bits = bits >> (8  - bitCount);
+        // bitCount -= 8; 
     }
 }
 void BitPacker::closeStream(){

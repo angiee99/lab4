@@ -11,9 +11,11 @@ void Encoder::encode(const std::string& inputFilePath, const std::string& output
     writer.initWriter(outputFilePath); 
     char nextChar; //next 
     std::string currentStr =""; //curent sequence we are looking at
-
+    std::string prevStr = ""; 
     while (inputFile.get(nextChar)) {
+        
         currentStr += nextChar;
+        prevStr = currentStr;
         std::cout << currentStr << std::endl;
 
         if (!dictionary.includes(currentStr)) {
@@ -28,6 +30,7 @@ void Encoder::encode(const std::string& inputFilePath, const std::string& output
                 // add to dictionary including the current character
             dictionary.addCode(currentStr+nextChar); 
             
+            
             currentStr = nextChar; //currentStr = last char added
             
             if (dictionary.isFull()) { //reset dictionary
@@ -36,9 +39,10 @@ void Encoder::encode(const std::string& inputFilePath, const std::string& output
             }
         }
         
-    }// Process the last character sequence
-    if (!currentStr.empty()) {
-        packCode(dictionary.getCode(currentStr));
+    }// Process the last character sequence with prev str now
+    if (!prevStr.empty()) {
+        std::cout << prevStr << std::endl;
+        packCode(dictionary.getCode(prevStr));
         // std::cout << "last added code: " << dictionary.getCode(currentStr) <<std::endl;
     }
     writer.writeLast();

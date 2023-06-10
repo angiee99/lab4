@@ -8,9 +8,9 @@ int main(int argc, char* argv[]) {
         
         Archiver LZW_Arch; 
     
-        LZW_Arch.compress("input.txt", "output2.bmp");
+        LZW_Arch.compress("input_small.txt", "output.bmp");
 
-        LZW_Arch.decompress("output2.bmp");
+        LZW_Arch.decompress("output.bmp");
     
     }
     catch (std::invalid_argument &e){
