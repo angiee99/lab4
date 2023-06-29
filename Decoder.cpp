@@ -1,4 +1,8 @@
 #include "Decoder.h"
+
+Decoder::~Decoder(){
+    if(outputFile.is_open()) outputFile.close();
+}
 void Decoder::decode(const std::string& inputFilePath) {
     
     std::string outputName = reader.setStream(inputFilePath); //init the BitReader

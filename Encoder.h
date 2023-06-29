@@ -16,6 +16,7 @@ private:
     std::ifstream inputFile; 
 
 public:
+    ~Encoder();
     void encode(const std::string& inputFilePath, const std::string& outputFilePath);
     void packCode(uint16_t code);
 };

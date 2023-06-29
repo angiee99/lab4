@@ -1,5 +1,8 @@
 #include "Encoder.h" 
 
+Encoder::~Encoder(){
+    if (inputFile.is_open()) inputFile.close();
+}
 void Encoder::encode(const std::string& inputFilePath, const std::string& outputFilePath) {
 
     inputFile.open(inputFilePath, std::ios::binary);
